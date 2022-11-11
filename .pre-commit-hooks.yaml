@@ -1,0 +1,8 @@
+- id: checkpatch.pl
+  name: run checkpatch.pl
+  description: >
+    Check whether the code follows kernel coding style.
+  entry: pre_commit_hooks/do-checkpatch
+  args: [-v]
+  language: script
+  pass_filenames: false
