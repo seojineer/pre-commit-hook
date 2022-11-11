@@ -1,0 +1,7 @@
+- id: checkpatch.pl
+  name: run checkpatch.pl
+  description: >
+    Check whether the code follows kernel coding style.
+  entry: pre_commit_hooks/checkpatch/checkpatch.pl
+  args: [--codespell, --color=always] # use codespell/dictionary.txt as default codespellfile
+  language: script
