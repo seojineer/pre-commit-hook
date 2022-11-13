@@ -7,3 +7,4 @@
   args: [-v]
   #args: [--codespell, --color=always] # use codespell/dictionary.txt as default codespellfile
   language: script
+  pass_filenames: false
