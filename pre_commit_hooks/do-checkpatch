@@ -11,8 +11,33 @@ from tools.console import Console
 from tools.message import get_retry_msg
 from tools.constant import GIT_DIFF_CACHED, CHECKPATCH, SPELLFILE
 
+FILE_PATH = f"{os.path.dirname(os.path.realpath(__file__))}"
+CHECKPATCH_CMD = [
+    f"{FILE_PATH}/{CHECKPATCH}",
+    "--codespell",
+    f"--codespellfile={FILE_PATH}/{SPELLFILE}",
+    "--color=always",
+]
 
-def check_patch(diff, verbose=False):
+def check_result(result):
+    """check result of checkpatch.pl
+
+    Args:
+        result(str): log of checkpatch.pl execution
+    """
+    if len(result) > 0:
+        results = re.findall(r"\d+ [A-z]+, \d+ [A-z]+, \d+ [A-z]+", result)
+        errors, warnings, checks = map(int, re.findall(r"\d+", results[0]))
+
+        retry_msg = get_retry_msg(GIT_DIFF_CACHED, " ".join(CHECKPATCH_CMD))
+
+        if errors > 0:
+            Console.error("[ERROR] " + retry_msg)
+            raise Exception("checkpatch.pl error")
+        if warnings > 0:
+            Console.warn("[WARN] " + retry_msg)
+
+def run_check_patch(diff, verbose=False):
     """Run checkpatch.pl to check coding style
 
     Args:
@@ -21,34 +46,16 @@ def check_patch(diff, verbose=False):
     """
 
     try:
-        dir_path = f"{os.path.dirname(os.path.realpath(__file__))}"
-        cmd = [
-            f"{dir_path}/{CHECKPATCH}",
-            "--codespell",
-            f"--codespellfile={dir_path}/{SPELLFILE}",
-            "--color=always",
-        ]
-        res = run(cmd, input=diff)
-        result = res.stdout.decode("utf-8")
+        result = run(CHECKPATCH_CMD, input=diff).stdout.decode("utf-8")
         if verbose:
             Console.info(result)
 
-        # parse logs
-        if len(result) > 0:
-            results = re.findall("\d+ [A-z]+, \d+ [A-z]+, \d+ [A-z]+", result)
-            errors, warnings, checks = map(int, re.findall("\d+", results[0]))
-
-            retry_msg = get_retry_msg(GIT_DIFF_CACHED, " ".join(cmd))
-
-            if errors > 0:
-                Console.error("[ERROR] " + retry_msg)
-                raise Exception("checkpatch.pl error")
-            if warnings > 0:
-                Console.warn("[WARN] " + retry_msg)
+        return result
 
     except FileNotFoundError:
         Console.error("[ERROR] checkpatch.pl not found.")
         return
+
 
 if __name__ == "__main__":
     """Check code if satisfied with linux coding style"""
@@ -57,7 +64,8 @@ if __name__ == "__main__":
         args = get_args()
 
         diff = get_diff(cached=True)
-        check_patch(diff, verbose=args.verbose)
+        result = run_check_patch(diff, verbose=args.verbose)
+        check_result(result)
 
     except Exception as e:
         print(e)
