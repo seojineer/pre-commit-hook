@@ -18,6 +18,5 @@ def get_args(argv=None):
         help="show log as detail",
         action="store_true",
     )
-    parser.add_argument("--prev_rev", dest="prev_rev", help="previous git commit hash")
 
     return parser.parse_args(argv)
