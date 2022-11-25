@@ -5784,7 +5784,7 @@ sub process {
 					}
 					if (!defined $camelcase{$word}) {
 						$camelcase{$word} = 1;
-						CHK("CAMELCASE",
+						ERROR("CAMELCASE",
 						    "Avoid CamelCase: <$word>\n" . $herecurr);
 					}
 				}
