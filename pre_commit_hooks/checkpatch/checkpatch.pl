@@ -5779,10 +5779,10 @@ sub process {
 					next if ($word !~ /[A-Z][a-z]|[a-z][A-Z]/);
 					if ($check) {
 						seed_camelcase_includes();
-						if (!$file && !$camelcase_file_seeded) {
-							seed_camelcase_file($realfile);
-							$camelcase_file_seeded = 1;
-						}
+						#if (!$file && !$camelcase_file_seeded) {
+							#seed_camelcase_file($realfile);
+							#$camelcase_file_seeded = 1;
+						#}
 					}
 					if (!defined $camelcase{$word}) {
 						$camelcase{$word} = 1;
