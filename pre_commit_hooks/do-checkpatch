@@ -19,6 +19,7 @@ CHECKPATCH_CMD = [
     "--color=always",
 ]
 
+
 def check_result(result):
     """check result of checkpatch.pl
 
@@ -26,7 +27,7 @@ def check_result(result):
         result(str): log of checkpatch.pl execution
     """
     if len(result) > 0:
-        results = re.findall(r"\d+ [A-z]+, \d+ [A-z]+, \d+ [A-z]+", result)
+        results = re.findall(r"\d+ errors, \d+ warnings, \d+ checks", result)
         errors, warnings, checks = map(int, re.findall(r"\d+", results[0]))
 
         retry_msg = get_retry_msg(GIT_DIFF_CACHED, " ".join(CHECKPATCH_CMD))
@@ -36,6 +37,7 @@ def check_result(result):
             raise Exception("checkpatch.pl error")
         if warnings > 0:
             Console.warn("[WARN] " + retry_msg)
+
 
 def run_check_patch(diff, verbose=False):
     """Run checkpatch.pl to check coding style

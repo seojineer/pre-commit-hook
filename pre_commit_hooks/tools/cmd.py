@@ -1,4 +1,5 @@
 import subprocess
+from tempfile import NamedTemporaryFile
 
 
 class Command:
@@ -22,14 +23,18 @@ def run(cmd, **kw):
     if "input" in kw.keys():
         kw.pop("input")
 
-    process = subprocess.Popen(
-        cmd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        stdin=subprocess.PIPE,
-        **kw,
-    )
-    stdout, stderr = process.communicate(input=input)
-    return_code = process.returncode
+    with NamedTemporaryFile() as out:
+        process = subprocess.Popen(
+            cmd,
+            stdout=out,
+            stderr=out,
+            stdin=subprocess.PIPE,
+            **kw,
+        )
+        process.communicate(input=input)
+        out.seek(0)
+        stdout = out.read()
+        stderr = None
+        return_code = process.returncode
 
     return Command(stdout, stderr, return_code)
