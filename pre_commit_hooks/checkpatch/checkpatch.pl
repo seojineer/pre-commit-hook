@@ -65,6 +65,7 @@ my $codespell = 0;
 #my $codespellfile = "/usr/share/codespell/dictionary.txt";
 my $codespellfile = "$D/codespell/dictionary.txt";
 my $user_codespellfile = "";
+my $allow_camelcasefile= ".allow_camelcase";
 my $conststructsfile = "$D/const_structs.checkpatch";
 my $docsfile = "$D/../Documentation/dev-tools/checkpatch.rst";
 my $typedefsfile;
@@ -1098,6 +1099,18 @@ sub seed_camelcase_file {
 			$camelcase{$1} = 1;
 		}
 	}
+}
+
+sub seed_camelcase_ignores {
+	return if (!(-f $allow_camelcasefile));
+
+	open(my $camelcase_allow_file, '<', "$allow_camelcasefile")
+	    or warn "$P: Can't read '$allow_camelcasefile' $!\n";
+	while (<$camelcase_allow_file>) {
+		chomp;
+		$camelcase{$_} = 1;
+	}
+	close($camelcase_allow_file);
 }
 
 our %maintained_status = ();
@@ -5778,6 +5791,7 @@ sub process {
 					my $word = $1;
 					next if ($word !~ /[A-Z][a-z]|[a-z][A-Z]/);
 					if ($check) {
+						seed_camelcase_ignores();
 						seed_camelcase_includes();
 						#if (!$file && !$camelcase_file_seeded) {
 							#seed_camelcase_file($realfile);
