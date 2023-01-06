@@ -6149,12 +6149,15 @@ sub process {
 					$allowed = 1;
 				}
 			}
-			if ($level == 0 && $block =~ /^\s*\{/ && !$allowed) {
+			if ($line =~ /^.\s*#\s*(?:if|else)/) {
+				$allowed = 1;
+			}
+			if ($level == 0 && $block !~ /^\s*\{/ && !$allowed) {
 				my $cnt = statement_rawlines($block);
 				my $herectx = get_stat_here($linenr, $cnt, $here);
 
 				WARN("BRACES",
-				     "braces {} are not necessary for single statement blocks\n" . $herectx);
+				     "braces {} are necessary for single statement blocks\n" . $herectx);
 			}
 		}
 
