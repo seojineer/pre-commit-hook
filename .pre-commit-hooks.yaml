@@ -11,3 +11,11 @@
   entry: file must not have executable permission.
   language: fail
   types: [executable]
+- id: convert-to-junit
+  name: convert log to junit format
+  description: >
+    Generate junit format from text log file
+  entry: pre_commit_hooks/convert-to-junit
+  args: [-i, log.txt, -o, out.xml]
+  language: script
+  pass_filenames: false

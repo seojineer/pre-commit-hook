@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+"""Check code if satisfied with linux coding style"""
 
 import sys
 import os
 import re
 
-from tools.parser import get_args
+from tools.parser import get_parser
 from tools.git_diff import get_diff
 from tools.cmd import run
 from tools.console import Console
@@ -26,8 +27,8 @@ def check_result(result):
     Args:
         result(str): log of checkpatch.pl execution
     """
-    if len(result) > 0:
-        results = re.findall(r"\d+ errors, \d+ warnings, \d+ checks", result)
+    results = re.findall(r"\d+ errors, \d+ warnings, \d+ checks", result)
+    if len(results) > 0:
         errors, warnings, checks = map(int, re.findall(r"\d+", results[0]))
 
         retry_msg = get_retry_msg(GIT_DIFF_CACHED, " ".join(CHECKPATCH_CMD))
@@ -60,10 +61,10 @@ def run_check_patch(diff, verbose=False):
 
 
 if __name__ == "__main__":
-    """Check code if satisfied with linux coding style"""
 
     try:
-        args = get_args()
+        parser = get_parser()
+        args = parser.parse_args()
 
         diff = get_diff(cached=True)
         result = run_check_patch(diff, verbose=args.verbose)

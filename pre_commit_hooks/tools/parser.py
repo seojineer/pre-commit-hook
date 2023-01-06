@@ -3,8 +3,8 @@
 import argparse
 
 
-def get_args(argv=None):
-    """Parse argument
+def get_parser(argv=None):
+    """Default Parser
 
     Args:
         argv (list): string list to parse. default value is sys.argv.
@@ -19,4 +19,4 @@ def get_args(argv=None):
         action="store_true",
     )
 
-    return parser.parse_args(argv)
+    return parser
