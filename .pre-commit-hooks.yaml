@@ -5,7 +5,6 @@
   entry: pre_commit_hooks/do-checkpatch
   args: [-v]
   language: script
-  pass_filenames: false
 - id: check-file-execute-permission
   name: file execute permission check
   entry: file must not have executable permission.

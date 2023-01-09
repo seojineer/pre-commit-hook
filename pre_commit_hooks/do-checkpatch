@@ -64,9 +64,15 @@ if __name__ == "__main__":
 
     try:
         parser = get_parser()
+        parser.add_argument(
+            "files",
+            nargs="*",
+            metavar="<file>...",
+            help="if specified, only consider differences in these files",
+        )
         args = parser.parse_args()
 
-        diff = get_diff(cached=True)
+        diff = get_diff(cached=True, files=args.files)
         result = run_check_patch(diff, verbose=args.verbose)
         check_result(result)
 
