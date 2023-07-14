@@ -49,15 +49,17 @@ def run_check_patch(diff, verbose=False):
     """
 
     try:
-        result = run(CHECKPATCH_CMD, input=diff).stdout.decode("utf-8")
+        result = run(CHECKPATCH_CMD, input=diff).stdout.decode("cp949")
         if verbose:
             Console.info(result)
 
         return result
 
     except FileNotFoundError:
-        Console.error("[ERROR] checkpatch.pl not found.")
-        return
+        raise Exception("checkpatch.pl not found.")
+
+    except Exception as e:
+        raise Exception(e)
 
 
 if __name__ == "__main__":
